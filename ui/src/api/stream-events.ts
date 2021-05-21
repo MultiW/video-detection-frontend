@@ -1,4 +1,4 @@
-interface StreamEvents {
+export interface StreamEvents {
     events: StreamEvent[];
 }
 

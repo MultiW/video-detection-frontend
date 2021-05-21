@@ -1,4 +1,6 @@
-export const mockResponse: StreamEvents = {
+import { StreamEvents } from './stream-events';
+
+const mockResponse: StreamEvents = {
     events: [
         {
             videoStream: 'Warriors Game',
@@ -713,6 +715,7 @@ export const mockResponse: StreamEvents = {
                 {
                     boundingBox: {
                         top: 0.113,
+                        left: 0.254,
                         height: 0.754,
                         width: 0.498,
                     },
@@ -974,6 +977,4 @@ export const mockResponse: StreamEvents = {
     ],
 };
 
-module.exports = {
-    mockResponse,
-};
+export default mockResponse;
