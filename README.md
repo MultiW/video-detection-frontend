@@ -1,9 +1,11 @@
 # Video Stream Event Monitoring
 
+## **Project Structure**
+
 ## **Building and Running**
 Run the application by opening ```index.html``` in the browser.
-
-Run the latest changes to the code using ```npm start```.
+***
+If you made any changes to the code, run those changes using ```npm start```.
 
 When new featuers are complete, deploy the latest changes to the code:
 ```bash
