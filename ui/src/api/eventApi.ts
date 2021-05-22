@@ -1,5 +1,5 @@
-import mockResponse from './event_data';
-import { StreamEvent } from './stream-events';
+import mockResponse from './eventData';
+import { StreamEvent } from './streamEvents';
 
 export function getEvents(): Promise<StreamEvent[]> {
     // TODO: replace with actual API call. This is a mock.

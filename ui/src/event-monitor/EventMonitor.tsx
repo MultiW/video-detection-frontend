@@ -1,6 +1,6 @@
 import React from 'react';
-import { getEvents } from '../api/event-api';
-import { StreamEvent } from '../api/stream-events';
+import { getEvents } from '../api/eventApi';
+import { StreamEvent } from '../api/streamEvents';
 import { EventsTable } from './EventsTable';
 import Container from '@material-ui/core/Container';
 import CircularProgress from '@material-ui/core/CircularProgress';

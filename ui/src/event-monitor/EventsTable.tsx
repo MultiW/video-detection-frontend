@@ -1,5 +1,5 @@
 import React from 'react';
-import { StreamEvent } from '../api/stream-events';
+import { StreamEvent } from '../api/streamEvents';
 import { ScrollTable, ScrollTableColumn, ScrollTableData } from './ScrollTable';
 
 interface EventsTableProps {
