@@ -1,18 +1,28 @@
 import React from 'react';
-import { EventMonitor } from './event-monitor/EventMonitor';
-import Container from '@material-ui/core/Container';
+import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
+import EventMonitor from './event-monitor/EventMonitor';
 
-class App extends React.Component {
+const styles = createStyles({
+    root: {
+        flexGrow: 1,
+        height: '100vh',
+        overflow: 'auto',
+        display: 'flex',
+    },
+});
+
+class App extends React.Component<WithStyles<typeof styles>> {
+    constructor(props: WithStyles<typeof styles>) {
+        super(props);
+    }
+
     render(): React.ReactNode {
         return (
-            // <Container maxWidth="lg">
-            //     <EventMonitor />
-            // </Container>
-            <main>
+            <main className={this.props.classes.root}>
                 <EventMonitor />
             </main>
         );
     }
 }
 
-export default App;
+export default withStyles(styles)(App);

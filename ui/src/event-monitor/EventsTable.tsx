@@ -3,8 +3,9 @@ import { StreamEvent } from '../api/streamEvents';
 import { ScrollTable, ScrollTableColumn, ScrollTableData } from './ScrollTable';
 
 interface EventsTableProps {
-    id?: string;
-    events: StreamEvent[];
+    events?: StreamEvent[];
+    height?: string;
+    onSelectRow?: (selectedRow: ScrollTableData) => void;
 }
 
 interface EventsTableState {}
@@ -15,7 +16,15 @@ export class EventsTable extends React.Component<EventsTableProps, EventsTableSt
     }
 
     render(): React.ReactNode {
-        return <ScrollTable data={this.formatTableData()} columns={this.getColumnsConfiguration()} />;
+        return (
+            <ScrollTable
+                data={this.formatTableData()}
+                columns={this.getColumnsConfiguration()}
+                height={this.props.height}
+                isLoading={!!this.props.events}
+                onSelectRow={this.props.onSelectRow}
+            />
+        );
     }
 
     private formatTableData = (): ScrollTableData[] => {
@@ -25,6 +34,7 @@ export class EventsTable extends React.Component<EventsTableProps, EventsTableSt
                     id: `${event.imageSource}-${event.timestamp}`,
                     stream: event.videoStream,
                     timestamp: event.timestamp,
+                    originalObject: event,
                 };
             });
         }
