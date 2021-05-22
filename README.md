@@ -4,7 +4,7 @@
 
 ## **Building and Running**
 Run the application by opening ```index.html``` in the browser.
-***
+
 If you made any changes to the code, run those changes using ```npm start```.
 
 When new featuers are complete, deploy the latest changes to the code:
@@ -50,4 +50,6 @@ Set up automatic linting in your IDE:
 
 ## **Improvements**
 
-#### **Receiving New Event Updates**
+#### Receiving new event updates
+
+#### Events table should use lazy loading

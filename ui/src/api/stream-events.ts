@@ -2,7 +2,7 @@ export interface StreamEvents {
     events: StreamEvent[];
 }
 
-interface StreamEvent {
+export interface StreamEvent {
     videoStream: string;
     timestamp: number;
     imageSource: string;

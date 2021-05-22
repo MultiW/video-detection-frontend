@@ -1,13 +1,16 @@
 import React from 'react';
-import './App.css';
-import { EventMonitor } from './event-monitor/event-monitor';
+import { EventMonitor } from './event-monitor/EventMonitor';
+import Container from '@material-ui/core/Container';
 
 class App extends React.Component {
     render(): React.ReactNode {
         return (
-            <div className="App">
+            // <Container maxWidth="lg">
+            //     <EventMonitor />
+            // </Container>
+            <main>
                 <EventMonitor />
-            </div>
+            </main>
         );
     }
 }
