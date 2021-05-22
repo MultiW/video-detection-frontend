@@ -1,5 +1,6 @@
 import React from 'react';
 import { StreamEvent } from '../api/streamEvents';
+import { formatEpochTime, shortDateTimeFormat } from '../utils/dateTimeUtil';
 import { ScrollTable, ScrollTableColumn, ScrollTableData } from './ScrollTable';
 
 interface EventsTableProps {
@@ -51,7 +52,12 @@ export class EventsTable extends React.Component<EventsTableProps, EventsTableSt
             {
                 id: 'timestamp',
                 label: 'Time',
+                format: this.formatTimestamp as (value: unknown) => React.ReactNode,
             },
         ];
     };
+
+    private formatTimestamp(timestamp: number): React.ReactNode {
+        return formatEpochTime(timestamp, shortDateTimeFormat);
+    }
 }
