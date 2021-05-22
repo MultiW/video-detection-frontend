@@ -5,6 +5,7 @@ import { StreamEvent } from '../api/streamEvents';
 import { EventsTable } from './EventsTable';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
 import { ScrollTableData } from './ScrollTable';
 
 const styles = (theme: Theme) => ({
@@ -12,6 +13,9 @@ const styles = (theme: Theme) => ({
         height: '100vh',
         paddingTop: theme.spacing(4),
         paddingBottom: theme.spacing(4),
+    },
+    section: {
+        padding: theme.spacing(2),
     },
 });
 
@@ -43,7 +47,7 @@ class EventMonitor extends React.Component<EventMonitorProps, EventMonitorState>
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={3} lg={4}>
-                        {this.renderEventsTable()}
+                        <Paper className={classes.section}>{this.renderEventsTable()}</Paper>
                     </Grid>
                 </Grid>
             </Container>
@@ -51,7 +55,7 @@ class EventMonitor extends React.Component<EventMonitorProps, EventMonitorState>
     }
 
     private renderEventsTable = (): React.ReactNode => {
-        return <EventsTable events={this.state.events} height="90vh" onSelectRow={this.onSelectEvent} />;
+        return <EventsTable events={this.state.events} height="85vh" onSelectRow={this.onSelectEvent} />;
     };
 
     private onSelectEvent = (row: ScrollTableData) => {

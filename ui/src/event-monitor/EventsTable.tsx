@@ -18,6 +18,7 @@ export class EventsTable extends React.Component<EventsTableProps, EventsTableSt
     render(): React.ReactNode {
         return (
             <ScrollTable
+                title="Detected Events"
                 data={this.formatTableData()}
                 columns={this.getColumnsConfiguration()}
                 height={this.props.height}
