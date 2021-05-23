@@ -1,13 +1,10 @@
 import React from 'react';
-import { withStyles, WithStyles, Theme } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import { withStyles, WithStyles } from '@material-ui/core/styles';
 import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
 import Box from '@material-ui/core/Box';
 import { Prediction, BoundingBox } from './../../objects/streamEvents';
 
-const styles = (theme: Theme) => ({
+const styles = () => ({
     root: {
         display: 'grid',
     },
@@ -66,6 +63,7 @@ class AnnotatedImage extends React.Component<AnnotatedImageProps, AnnotatedImage
                             className={classes.boundingBox}
                             style={{
                                 position: 'absolute',
+                                color: prediction.color,
                                 height: `${100 * boundingBox.height}%`,
                                 width: `${100 * boundingBox.width}%`,
                                 top: `${100 * boundingBox.top}%`,

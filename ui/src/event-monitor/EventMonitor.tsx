@@ -8,6 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { ScrollTableData } from './events-table/ScrollTable';
 import EventDetails from './event-details/EventDetails';
+import { getRandomColor } from '../utils/randomColor';
 
 const styles = (theme: Theme) => ({
     container: {
@@ -73,8 +74,15 @@ class EventMonitor extends React.Component<EventMonitorProps, EventMonitorState>
             // Deselect row
             this.setState({ selectedEvent: undefined });
         } else {
+            const selectedStreamEvent: StreamEvent = row.originalObject as StreamEvent;
+
+            // assign colors to each predictions
+            for (let i = 0; i < selectedStreamEvent.predictions.length; i++) {
+                selectedStreamEvent.predictions[i].color = getRandomColor();
+            }
+
             // Select row
-            this.setState({ selectedEvent: row.originalObject as StreamEvent });
+            this.setState({ selectedEvent: selectedStreamEvent });
         }
     };
 }
