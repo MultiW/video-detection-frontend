@@ -1,11 +1,11 @@
 import React from 'react';
 import { withStyles, WithStyles, Theme } from '@material-ui/core/styles';
-import { StreamEvent, Prediction, BoundingBox } from '../api/streamEvents';
+import { StreamEvent, Prediction, BoundingBox } from '../../api/streamEvents';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
-import { formatEpochTime, longDateTimeFormat } from './../utils/dateTimeUtil';
+import { formatEpochTime, longDateTimeFormat } from '../../utils/dateTimeUtil';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 

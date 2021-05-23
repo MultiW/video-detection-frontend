@@ -1,6 +1,6 @@
 import React from 'react';
-import { StreamEvent } from '../api/streamEvents';
-import { formatEpochTime, shortDateTimeFormat } from '../utils/dateTimeUtil';
+import { StreamEvent } from '../../api/streamEvents';
+import { formatEpochTime, shortDateTimeFormat } from '../../utils/dateTimeUtil';
 import { ScrollTable, ScrollTableColumn, ScrollTableData } from './ScrollTable';
 
 interface EventsTableProps {

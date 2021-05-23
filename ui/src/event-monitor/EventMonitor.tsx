@@ -2,12 +2,12 @@ import React from 'react';
 import { withStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import { getEvents } from '../api/eventApi';
 import { StreamEvent } from '../api/streamEvents';
-import { EventsTable } from './EventsTable';
+import { EventsTable } from './events-table/EventsTable';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { ScrollTableData } from './ScrollTable';
-import EventDetails from './EventDetails';
+import EventDetails from './event-details/EventDetails';
 
 const styles = (theme: Theme) => ({
     container: {
