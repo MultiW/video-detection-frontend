@@ -21,7 +21,7 @@ const styles = (theme: Theme) => ({
         display: 'flex',
         flex: '70%',
     },
-    scoresGrid: {
+    predictionsGrid: {
         paddingBottom: '0 !important',
         display: 'flex',
         flex: '30%',
@@ -38,8 +38,8 @@ const styles = (theme: Theme) => ({
         maxHeight: 'auto',
     },
 
-    // Scores card
-    scoresCard: {
+    // Predictions card
+    predictionsCard: {
         height: '100%',
     },
 });
@@ -66,9 +66,9 @@ class EventDetails extends React.Component<EventDetailsProps, EventDetailsState>
                         {streamEvent == null ? this.renderBlankImageCard() : this.renderImageCard()}
                     </Card>
                 </Grid>
-                <Grid className={classes.scoresGrid} direction="column" item xs={12} md={12} lg={12}>
-                    <Card className={classes.scoresCard}>
-                        {streamEvent == null ? this.renderBlankScoresCard() : this.renderScoresCard()}
+                <Grid className={classes.predictionsGrid} direction="column" item xs={12} md={12} lg={12}>
+                    <Card className={classes.predictionsCard}>
+                        {streamEvent == null ? this.renderBlankPredictionsCard() : this.renderPredictionsCard()}
                     </Card>
                 </Grid>
             </Grid>
@@ -108,12 +108,12 @@ class EventDetails extends React.Component<EventDetailsProps, EventDetailsState>
         );
     };
 
-    private renderScoresCard = (): React.ReactNode => {
+    private renderPredictionsCard = (): React.ReactNode => {
         const { classes } = this.props;
         return <CardContent>asdf</CardContent>;
     };
 
-    private renderBlankScoresCard = (): React.ReactNode => {
+    private renderBlankPredictionsCard = (): React.ReactNode => {
         return (
             <CardContent>
                 <Subtitle>{'No event selected'}</Subtitle>

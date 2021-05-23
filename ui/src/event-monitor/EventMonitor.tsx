@@ -6,7 +6,7 @@ import { EventsTable } from './events-table/EventsTable';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import { ScrollTableData } from './events-table/ScrollTable';
+import { ScrollTableData } from '../common/ScrollTable';
 import EventDetails from './event-details/EventDetails';
 import { getRandomColor } from '../utils/randomColor';
 
