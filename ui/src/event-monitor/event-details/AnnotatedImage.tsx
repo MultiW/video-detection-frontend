@@ -1,28 +1,33 @@
 import React from 'react';
-import { withStyles, WithStyles } from '@material-ui/core/styles';
+import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
 import CardMedia from '@material-ui/core/CardMedia';
 import Box from '@material-ui/core/Box';
 import { Prediction, BoundingBox } from './../../objects/streamEvents';
 
-const styles = () => ({
-    root: {
-        display: 'grid',
-    },
-    image: {
-        maxHeight: '100%',
-        maxWidth: '100%',
+const styles = () =>
+    createStyles({
+        root: {
+            display: 'grid',
+            position: 'relative',
+        },
+        image: {
+            maxHeight: '100%',
+            maxWidth: '100%',
 
-        // Overlap image with bounding box
-        gridColumn: 1,
-        gridRow: 1,
-    },
-    boundingBox: {
-        // Overlaps bounding box with image
-        borderStyle: 'dashed',
-        gridColumn: 1,
-        gridRow: 1,
-    },
-});
+            // Overlap image with bounding box
+            gridColumn: 1,
+            gridRow: 1,
+        },
+        boundingBox: {
+            // Overlaps bounding box with image
+            gridColumn: 1,
+            gridRow: 1,
+
+            borderStyle: 'dashed',
+            borderWidth: 'medium',
+            position: 'absolute',
+        },
+    });
 
 interface AnnotatedImageProps extends WithStyles<typeof styles> {
     predictions: Prediction[];
@@ -40,7 +45,7 @@ class AnnotatedImage extends React.Component<AnnotatedImageProps, AnnotatedImage
         const { imageSource, classes } = this.props;
 
         return (
-            <Box className={classes.root} style={{ position: 'relative' }}>
+            <Box className={classes.root}>
                 {/* Render image */}
                 <CardMedia className={classes.image} component="img" image={imageSource} />
                 {/* Render annotations */}
@@ -62,7 +67,6 @@ class AnnotatedImage extends React.Component<AnnotatedImageProps, AnnotatedImage
                             key={uniqueKey}
                             className={classes.boundingBox}
                             style={{
-                                position: 'absolute',
                                 color: prediction.color,
                                 height: `${100 * boundingBox.height}%`,
                                 width: `${100 * boundingBox.width}%`,

@@ -5,8 +5,9 @@ import { ScrollTable, ScrollTableColumn, ScrollTableData } from '../../common/Sc
 
 interface EventsTableProps {
     events?: StreamEvent[];
-    height?: string;
+    className?: string;
     onSelectRow?: (selectedRow: ScrollTableData) => void;
+    style?: React.CSSProperties;
 }
 
 interface EventsTableState {}
@@ -20,10 +21,11 @@ export class EventsTable extends React.Component<EventsTableProps, EventsTableSt
         return (
             <ScrollTable
                 title="Detected Events"
+                className={this.props.className}
                 data={this.formatTableData()}
                 columns={this.getColumnsConfiguration()}
-                height={this.props.height}
-                isLoading={!!this.props.events}
+                style={this.props.style}
+                isLoading={!this.props.events}
                 onSelectRow={this.props.onSelectRow}
             />
         );

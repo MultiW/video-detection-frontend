@@ -19,7 +19,7 @@ export interface ScrollTableColumn {
     label: string;
 
     minWidth?: number;
-    align?: 'right';
+    align?: 'right' | 'left' | 'center';
 
     // Format data in this column for display
     format?: (value: unknown) => React.ReactNode;
@@ -58,12 +58,14 @@ interface ScrollTableProps extends WithStyles<typeof styles> {
     columns: ScrollTableColumn[];
     data: ScrollTableData[]; // table rows
 
-    title?: React.ReactNode;
+    // Styling
+    className?: string;
+    style?: React.CSSProperties;
 
-    height?: string;
+    title?: React.ReactNode;
+    disableHeader?: boolean;
 
     isLoading?: boolean;
-
     onSelectRow?: (selectedRow: ScrollTableData) => void;
 }
 
@@ -86,7 +88,7 @@ class RawScrollTable extends React.Component<ScrollTableProps, ScrollTableState>
         return (
             <React.Fragment>
                 {title != null ? <SectionTitle>{this.props.title}</SectionTitle> : undefined}
-                {isLoading ? this.renderTable() : this.renderSpinner()}
+                {!isLoading ? this.renderTable() : this.renderSpinner()}
             </React.Fragment>
         );
     }
@@ -102,26 +104,28 @@ class RawScrollTable extends React.Component<ScrollTableProps, ScrollTableState>
     };
 
     private renderTable = (): React.ReactNode => {
-        const { columns, data, height } = this.props;
+        const { className, columns, data, style, disableHeader } = this.props;
         return (
-            <TableContainer style={{ height: height }}>
+            <TableContainer className={className} style={style}>
                 <Table stickyHeader>
-                    <TableHead>
-                        <TableRow>
-                            {
-                                // Render column headers
-                                columns.map((column: ScrollTableColumn) => (
-                                    <StyledTableCell
-                                        key={column.id}
-                                        align={column.align}
-                                        style={{ minWidth: column.minWidth }}
-                                    >
-                                        <b>{column.label}</b>
-                                    </StyledTableCell>
-                                ))
-                            }
-                        </TableRow>
-                    </TableHead>
+                    {!disableHeader ? (
+                        <TableHead>
+                            <TableRow>
+                                {
+                                    // Render column headers
+                                    columns.map((column: ScrollTableColumn) => (
+                                        <StyledTableCell
+                                            key={column.id}
+                                            align={column.align}
+                                            style={{ minWidth: column.minWidth }}
+                                        >
+                                            <b>{column.label}</b>
+                                        </StyledTableCell>
+                                    ))
+                                }
+                            </TableRow>
+                        </TableHead>
+                    ) : undefined}
                     <TableBody>
                         {
                             // Render rows
@@ -146,7 +150,6 @@ class RawScrollTable extends React.Component<ScrollTableProps, ScrollTableState>
                 key={row.id}
                 onClick={() => this.handleRowSelection(row, rowIndex)}
                 selected={isRowSelected}
-                onMouseOver={() => console.log('')}
                 style={!!onSelectRow ? { cursor: 'pointer' } : undefined} // change cursor on hover
             >
                 {
@@ -167,9 +170,11 @@ class RawScrollTable extends React.Component<ScrollTableProps, ScrollTableState>
     private handleRowSelection = (row: ScrollTableData, rowIndex: number) => {
         const { onSelectRow } = this.props;
 
-        if (onSelectRow) {
-            onSelectRow(row);
+        if (!onSelectRow) {
+            return;
         }
+
+        onSelectRow(row);
 
         if (rowIndex == this.state.selectedRowIndex) {
             // de-select row

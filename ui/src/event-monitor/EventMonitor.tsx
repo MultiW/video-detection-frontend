@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles, WithStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import { getEvents } from '../api/eventApi';
 import { StreamEvent } from '../objects/streamEvents';
 import { EventsTable } from './events-table/EventsTable';
@@ -10,16 +10,23 @@ import { ScrollTableData } from '../common/ScrollTable';
 import EventDetails from './event-details/EventDetails';
 import { getRandomColor } from '../utils/randomColor';
 
-const styles = (theme: Theme) => ({
-    container: {
-        height: '100vh',
-        paddingTop: theme.spacing(4),
-        paddingBottom: theme.spacing(4),
-    },
-    section: {
-        padding: theme.spacing(2),
-    },
-});
+const styles = (theme: Theme) =>
+    createStyles({
+        container: {
+            height: '75vh',
+            paddingTop: theme.spacing(4),
+            paddingBottom: theme.spacing(4),
+            position: 'relative',
+        },
+        section: {
+            padding: theme.spacing(2),
+        },
+        eventsTable: { height: '75vh' },
+        eventDetailsGrid: {
+            display: 'flex',
+            flexDirection: 'column',
+        },
+    });
 
 interface EventMonitorProps extends WithStyles<typeof styles> {}
 
@@ -55,7 +62,7 @@ class EventMonitor extends React.Component<EventMonitorProps, EventMonitorState>
                         <Paper className={classes.section}>{this.renderEventsTable()}</Paper>
                     </Grid>
                     {/* Right side of page: Image and predictions of the user selected event */}
-                    <Grid item xs={12} md={9} lg={8} style={{ display: 'flex', flexDirection: 'column' }}>
+                    <Grid item xs={12} md={9} lg={8} className={classes.eventDetailsGrid}>
                         <EventDetails streamEvent={selectedEvent} />
                     </Grid>
                 </Grid>
@@ -64,7 +71,13 @@ class EventMonitor extends React.Component<EventMonitorProps, EventMonitorState>
     }
 
     private renderEventsTable = (): React.ReactNode => {
-        return <EventsTable events={this.state.events} height="75vh" onSelectRow={this.onSelectEvent} />;
+        return (
+            <EventsTable
+                events={this.state.events}
+                className={this.props.classes.eventsTable}
+                onSelectRow={this.onSelectEvent}
+            />
+        );
     };
 
     private onSelectEvent = (row: ScrollTableData) => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles, WithStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import { StreamEvent } from '../../objects/streamEvents';
 import { Prediction, BoundingBox } from '../../objects/streamEvents';
 import Grid, { GridSize } from '@material-ui/core/Grid';
@@ -10,39 +10,40 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import AnnotatedImage from './AnnotatedImage';
 import Subtitle from './Subtitle';
+import Predictions from './Predictions';
+import SectionTitle from '../../common/SectionTitle';
 
-const styles = (theme: Theme) => ({
-    // Main structure
-    root: {
-        display: 'contents',
-    },
-    imageGrid: {
-        paddingTop: '0 !important',
-        display: 'flex',
-        flex: '70%',
-    },
-    predictionsGrid: {
-        paddingBottom: '0 !important',
-        display: 'flex',
-        flex: '30%',
-    },
+const styles = (theme: Theme) =>
+    createStyles({
+        // Main structure
+        root: {
+            display: 'contents',
+        },
+        imageGrid: {
+            paddingTop: '0 !important',
+            display: 'flex',
+            flex: '70%',
+        },
+        predictionsGrid: {
+            paddingBottom: '0 !important',
+            display: 'flex',
+            flex: '30%',
+        },
 
-    // Image card
-    imageCard: {
-        height: 'auto', // match children size
-        width: '100%', // fill up remaining space
-    },
-    imageCardContent: {
-        margin: 'auto',
-        maxWidth: '30vw',
-        maxHeight: 'auto',
-    },
+        // Image card
+        imageCard: {
+            height: 'auto', // match children size
+            width: '100%', // fill up remaining space
+        },
+        imageCardContent: {
+            margin: 'auto',
+            maxWidth: '25vw',
+            maxHeight: 'auto',
+        },
 
-    // Predictions card
-    predictionsCard: {
-        height: '100%',
-    },
-});
+        // Predictions card
+        predictionsCard: {},
+    });
 
 interface EventDetailsProps extends WithStyles<typeof styles> {
     streamEvent?: StreamEvent;
@@ -63,19 +64,19 @@ class EventDetails extends React.Component<EventDetailsProps, EventDetailsState>
             <Grid container spacing={1} className={classes.root}>
                 <Grid item xs={12} md={12} lg={12} className={classes.imageGrid}>
                     <Card className={classes.imageCard}>
-                        {streamEvent == null ? this.renderBlankImageCard() : this.renderImageCard()}
+                        {streamEvent == null ? this.renderBlankImage() : this.renderImage()}
                     </Card>
                 </Grid>
                 <Grid className={classes.predictionsGrid} direction="column" item xs={12} md={12} lg={12}>
                     <Card className={classes.predictionsCard}>
-                        {streamEvent == null ? this.renderBlankPredictionsCard() : this.renderPredictionsCard()}
+                        {streamEvent == null ? this.renderBlankPredictions() : this.renderPredictions()}
                     </Card>
                 </Grid>
             </Grid>
         );
     }
 
-    private renderBlankImageCard = (): React.ReactNode => {
+    private renderBlankImage = (): React.ReactNode => {
         return (
             <CardContent>
                 <Subtitle>{'No event selected'}</Subtitle>
@@ -83,7 +84,7 @@ class EventDetails extends React.Component<EventDetailsProps, EventDetailsState>
         );
     };
 
-    private renderImageCard = (): React.ReactNode => {
+    private renderImage = (): React.ReactNode => {
         const { streamEvent, classes } = this.props;
 
         if (streamEvent == null) {
@@ -95,6 +96,7 @@ class EventDetails extends React.Component<EventDetailsProps, EventDetailsState>
             <React.Fragment>
                 {/* Render image title */}
                 <CardContent>
+                    <SectionTitle>Detected Objects</SectionTitle>
                     <Subtitle>
                         {`${streamEvent.videoStream} (${formatEpochTime(streamEvent.timestamp, longDateTimeFormat)})`}
                     </Subtitle>
@@ -108,12 +110,23 @@ class EventDetails extends React.Component<EventDetailsProps, EventDetailsState>
         );
     };
 
-    private renderPredictionsCard = (): React.ReactNode => {
-        const { classes } = this.props;
-        return <CardContent>asdf</CardContent>;
+    private renderPredictions = (): React.ReactNode => {
+        const { classes, streamEvent } = this.props;
+
+        if (streamEvent == null) {
+            // This should already be handled. streamEvent shouldn't be null
+            return '';
+        }
+
+        return (
+            <CardContent>
+                <SectionTitle>Scores</SectionTitle>
+                <Predictions predictions={streamEvent.predictions}></Predictions>
+            </CardContent>
+        );
     };
 
-    private renderBlankPredictionsCard = (): React.ReactNode => {
+    private renderBlankPredictions = (): React.ReactNode => {
         return (
             <CardContent>
                 <Subtitle>{'No event selected'}</Subtitle>
