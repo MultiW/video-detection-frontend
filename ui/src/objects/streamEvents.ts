@@ -12,6 +12,7 @@ export interface StreamEvent {
 export interface Prediction {
     boundingBox: BoundingBox;
     scores: Score[];
+    color?: string;
 }
 
 export interface BoundingBox {

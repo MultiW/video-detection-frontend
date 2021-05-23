@@ -1,12 +1,12 @@
 import React from 'react';
 import { withStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import { getEvents } from '../api/eventApi';
-import { StreamEvent } from '../api/streamEvents';
+import { StreamEvent } from '../objects/streamEvents';
 import { EventsTable } from './events-table/EventsTable';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import { ScrollTableData } from './ScrollTable';
+import { ScrollTableData } from './events-table/ScrollTable';
 import EventDetails from './event-details/EventDetails';
 
 const styles = (theme: Theme) => ({
@@ -49,9 +49,11 @@ class EventMonitor extends React.Component<EventMonitorProps, EventMonitorState>
         return (
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
+                    {/* Left side of page: Table of all detected events */}
                     <Grid item xs={12} md={3} lg={4}>
                         <Paper className={classes.section}>{this.renderEventsTable()}</Paper>
                     </Grid>
+                    {/* Right side of page: Image and predictions of the user selected event */}
                     <Grid item xs={12} md={9} lg={8}>
                         <Paper>
                             <EventDetails streamEvent={selectedEvent} />

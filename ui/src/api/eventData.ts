@@ -1,4 +1,4 @@
-import { StreamEvents } from './streamEvents';
+import { StreamEvents } from '../objects/streamEvents';
 
 const mockResponse: StreamEvents = {
     events: [
