@@ -9,19 +9,19 @@ export interface StreamEvent {
     predictions: Prediction[];
 }
 
-interface Prediction {
+export interface Prediction {
     boundingBox: BoundingBox;
     scores: Score[];
 }
 
-interface BoundingBox {
+export interface BoundingBox {
     top: number;
     left: number;
     height: number;
     width: number;
 }
 
-interface Score {
+export interface Score {
     label: string;
     score: number;
 }
