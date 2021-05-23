@@ -13,16 +13,13 @@ import AnnotatedImage from './AnnotatedImage';
 
 const styles = (theme: Theme) => ({
     imageCard: {
-        width: 'inherit',
-        maxHeight: '55vh',
-        overfill: 'auto',
+        height: '100%',
+        width: '100%',
     },
-    imageContainer: {
-        width: 'inherit',
-        maxHeight: '50vh',
-    },
-    image: {
-        maxWidth: '100%',
+    imageCardContent: {
+        margin: 'auto',
+        maxWidth: '30vw',
+        maxHeight: 'auto',
     },
 });
 
@@ -74,7 +71,9 @@ class EventDetails extends React.Component<EventDetailsProps, EventDetailsState>
                 </CardContent>
 
                 {/* Render image */}
-                <AnnotatedImage predictions={streamEvent.predictions} imageSource={streamEvent.imageSource} />
+                <CardContent className={classes.imageCardContent}>
+                    <AnnotatedImage predictions={streamEvent.predictions} imageSource={streamEvent.imageSource} />
+                </CardContent>
             </React.Fragment>
         );
     };

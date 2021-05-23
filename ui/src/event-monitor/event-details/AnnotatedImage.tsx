@@ -12,6 +12,7 @@ const styles = (theme: Theme) => ({
         display: 'grid',
     },
     image: {
+        maxHeight: '100%',
         maxWidth: '100%',
 
         // Overlap image with bounding box
@@ -42,9 +43,9 @@ class AnnotatedImage extends React.Component<AnnotatedImageProps, AnnotatedImage
         const { imageSource, classes } = this.props;
 
         return (
-            <Box className={classes.root}>
+            <Box className={classes.root} style={{ position: 'relative' }}>
                 {/* Render image */}
-                <CardMedia style={{}} className={classes.image} component="img" image={imageSource} />
+                <CardMedia className={classes.image} component="img" image={imageSource} />
                 {/* Render annotations */}
                 {this.renderBoundingBoxes()}
             </Box>
@@ -64,10 +65,11 @@ class AnnotatedImage extends React.Component<AnnotatedImageProps, AnnotatedImage
                             key={uniqueKey}
                             className={classes.boundingBox}
                             style={{
-                                marginTop: `${100 * boundingBox.top}%`,
-                                marginLeft: `${100 * boundingBox.left}%`,
+                                position: 'absolute',
                                 height: `${100 * boundingBox.height}%`,
                                 width: `${100 * boundingBox.width}%`,
+                                top: `${100 * boundingBox.top}%`,
+                                left: `${100 * boundingBox.left}%`,
                             }}
                         />
                     );
