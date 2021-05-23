@@ -55,10 +55,8 @@ class EventMonitor extends React.Component<EventMonitorProps, EventMonitorState>
                         <Paper className={classes.section}>{this.renderEventsTable()}</Paper>
                     </Grid>
                     {/* Right side of page: Image and predictions of the user selected event */}
-                    <Grid item xs={12} md={9} lg={8}>
-                        <Paper>
-                            <EventDetails streamEvent={selectedEvent} />
-                        </Paper>
+                    <Grid item xs={12} md={9} lg={8} style={{ display: 'flex', flexDirection: 'column' }}>
+                        <EventDetails streamEvent={selectedEvent} />
                     </Grid>
                 </Grid>
             </Container>

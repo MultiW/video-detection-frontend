@@ -2,24 +2,45 @@ import React from 'react';
 import { withStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import { StreamEvent } from '../../objects/streamEvents';
 import { Prediction, BoundingBox } from '../../objects/streamEvents';
-import Grid from '@material-ui/core/Grid';
+import Grid, { GridSize } from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
-import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import { formatEpochTime, longDateTimeFormat } from '../../utils/dateTimeUtil';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import AnnotatedImage from './AnnotatedImage';
+import Subtitle from './Subtitle';
 
 const styles = (theme: Theme) => ({
+    // Main structure
+    root: {
+        display: 'contents',
+    },
+    imageGrid: {
+        paddingTop: '0 !important',
+        display: 'flex',
+        flex: '70%',
+    },
+    scoresGrid: {
+        paddingBottom: '0 !important',
+        display: 'flex',
+        flex: '30%',
+    },
+
+    // Image card
     imageCard: {
-        height: '100%',
-        width: '100%',
+        height: 'auto', // match children size
+        width: '100%', // fill up remaining space
     },
     imageCardContent: {
         margin: 'auto',
         maxWidth: '30vw',
         maxHeight: 'auto',
+    },
+
+    // Scores card
+    scoresCard: {
+        height: '100%',
     },
 });
 
@@ -39,21 +60,30 @@ class EventDetails extends React.Component<EventDetailsProps, EventDetailsState>
         const { streamEvent, classes } = this.props;
 
         return (
-            <Grid container>
-                <Grid item xs={12} md={12} lg={12}>
+            <Grid container spacing={1} className={classes.root}>
+                <Grid item xs={12} md={12} lg={12} className={classes.imageGrid}>
                     <Card className={classes.imageCard}>
-                        {streamEvent != null ? this.renderImageCard() : this.renderBlankCard}
+                        {streamEvent == null ? this.renderBlankImageCard() : this.renderImageCard()}
+                    </Card>
+                </Grid>
+                <Grid className={classes.scoresGrid} direction="column" item xs={12} md={12} lg={12}>
+                    <Card className={classes.scoresCard}>
+                        {streamEvent == null ? this.renderBlankScoresCard() : this.renderScoresCard()}
                     </Card>
                 </Grid>
             </Grid>
         );
     }
 
-    renderBlankCard = (): React.ReactNode => {
-        return <CardContent>Select an event</CardContent>;
+    private renderBlankImageCard = (): React.ReactNode => {
+        return (
+            <CardContent>
+                <Subtitle>{'No event selected'}</Subtitle>
+            </CardContent>
+        );
     };
 
-    renderImageCard = (): React.ReactNode => {
+    private renderImageCard = (): React.ReactNode => {
         const { streamEvent, classes } = this.props;
 
         if (streamEvent == null) {
@@ -65,9 +95,9 @@ class EventDetails extends React.Component<EventDetailsProps, EventDetailsState>
             <React.Fragment>
                 {/* Render image title */}
                 <CardContent>
-                    <Typography component="div" align="left" color="textSecondary" variant="body1">
+                    <Subtitle>
                         {`${streamEvent.videoStream} (${formatEpochTime(streamEvent.timestamp, longDateTimeFormat)})`}
-                    </Typography>
+                    </Subtitle>
                 </CardContent>
 
                 {/* Render image */}
@@ -75,6 +105,19 @@ class EventDetails extends React.Component<EventDetailsProps, EventDetailsState>
                     <AnnotatedImage predictions={streamEvent.predictions} imageSource={streamEvent.imageSource} />
                 </CardContent>
             </React.Fragment>
+        );
+    };
+
+    private renderScoresCard = (): React.ReactNode => {
+        const { classes } = this.props;
+        return <CardContent>asdf</CardContent>;
+    };
+
+    private renderBlankScoresCard = (): React.ReactNode => {
+        return (
+            <CardContent>
+                <Subtitle>{'No event selected'}</Subtitle>
+            </CardContent>
         );
     };
 }
