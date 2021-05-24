@@ -1,4 +1,7 @@
 # Video Stream Event Monitoring
+A web application to view the detected events of your video streams.
+
+<img src="./images/Preview.png" alt="drawing" width="1200"/>
 
 ## **What's Next?**
 How can we extend this project to become a real product? This may depend on the usage of the application.
