@@ -10,7 +10,7 @@ If you made any changes to the code, run those changes using ```npm start```.
 When new featuers are complete, deploy the latest changes to the code:
 ```bash
 cd ui
-npm run build
+npm run build && npx gulp
 cp -r build/* .. # move finalized index.html file to the root folder
 ```
 

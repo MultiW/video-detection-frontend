@@ -56,6 +56,9 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.170",
-    "@types/material-ui": "^0.21.8"
+    "@types/material-ui": "^0.21.8",
+    "gulp": "^4.0.2",
+    "gulp-inline-source": "^4.0.0",
+    "gulp-replace": "^1.1.3"
   }
 }
