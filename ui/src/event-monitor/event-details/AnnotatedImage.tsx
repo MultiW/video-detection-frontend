@@ -2,7 +2,7 @@ import React from 'react';
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
 import CardMedia from '@material-ui/core/CardMedia';
 import Box from '@material-ui/core/Box';
-import { Prediction, BoundingBox } from './../../objects/streamEvents';
+import { Prediction, BoundingBox } from './../../api/streamEvents';
 
 const styles = () =>
     createStyles({

@@ -1,5 +1,5 @@
 import mockResponse from './eventData';
-import { StreamEvent, Score } from '../objects/streamEvents';
+import { StreamEvent, Score } from './streamEvents';
 import { EventSortSettings, Order } from './eventSort';
 import EventFilter from './eventFilter';
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
-import { StreamEvent } from '../../objects/streamEvents';
+import { StreamEvent } from '../../api/streamEvents';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import { formatEpochTime, longDateTimeFormat } from '../../utils/dateTimeUtil';
 import AnnotatedImage from './AnnotatedImage';
-import Subtitle from './Subtitle';
+import Subtitle from './../../common/Subtitle';
 import Predictions from './Predictions';
 import SectionTitle from '../../common/SectionTitle';
 
@@ -25,6 +25,7 @@ const styles = () =>
             paddingBottom: '0 !important',
             display: 'flex',
             flex: '30%',
+            flexDirection: 'column',
         },
 
         // Image card
@@ -66,7 +67,7 @@ class EventDetails extends React.Component<EventDetailsProps, EventDetailsState>
                         {streamEvent == null ? this.renderBlankImage() : this.renderImage()}
                     </Card>
                 </Grid>
-                <Grid className={classes.predictionsGrid} direction="column" item xs={12} md={12} lg={12}>
+                <Grid item className={classes.predictionsGrid} xs={12} md={12} lg={12}>
                     <Card className={classes.predictionsCard}>
                         {streamEvent == null ? this.renderBlankPredictions() : this.renderPredictions()}
                     </Card>
@@ -95,7 +96,7 @@ class EventDetails extends React.Component<EventDetailsProps, EventDetailsState>
             <React.Fragment>
                 {/* Render image title */}
                 <CardContent>
-                    <SectionTitle gutterBottom={false}>Detected Objects</SectionTitle>
+                    <SectionTitle gutterBottom={false}>Detected</SectionTitle>
                     <Subtitle>
                         {`${streamEvent.videoStream} (${formatEpochTime(streamEvent.timestamp, longDateTimeFormat)})`}
                     </Subtitle>

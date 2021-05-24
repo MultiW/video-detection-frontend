@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
-import { Prediction, Score } from './../../objects/streamEvents';
+import { Prediction, Score } from './../../api/streamEvents';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import { ScrollTable, ScrollTableData, CellFormatter } from '../../common/ScrollTable';
@@ -40,7 +40,7 @@ class PredictionList extends React.Component<PredictionListProps, PredictionList
 
         return (
             <div className={classes.root}>
-                <GridList className={classes.gridList} cols={2} spacing={20}>
+                <GridList className={classes.gridList} cols={3} spacing={20}>
                     {predictions.map((prediction: Prediction, index: number) => {
                         const uniqueKey = `${index} ${prediction.color ?? ''}`;
                         return <GridListTile key={uniqueKey}>{this.renderScores(prediction)}</GridListTile>;

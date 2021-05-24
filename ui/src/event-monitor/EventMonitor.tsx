@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import { fetchEvents } from '../api/eventApi';
-import { StreamEvent } from '../objects/streamEvents';
+import { StreamEvent } from '../api/streamEvents';
 import { EventsTable } from './events-table/EventsTable';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
