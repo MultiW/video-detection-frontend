@@ -9,6 +9,24 @@ import TableRow from '@material-ui/core/TableRow';
 import SectionTitle from './SectionTitle';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Box from '@material-ui/core/Box';
+import { TableSortLabel } from '@material-ui/core';
+
+/**
+ * TODO: Improvements
+ * - Use generic type to represent the row object.
+ */
+
+export enum MuiSortOrder {
+    Asc = 'asc',
+    Desc = 'desc',
+}
+
+export interface SortColumnSettings {
+    defaultOrder: MuiSortOrder;
+    isDefault?: boolean;
+}
+
+export type CellFormatter = (row: ScrollTableData, value: unknown) => React.ReactNode;
 
 export interface ScrollTableColumn {
     // Unique identifier for this column
@@ -22,7 +40,10 @@ export interface ScrollTableColumn {
     align?: 'right' | 'left' | 'center';
 
     // Format data in this column for display
-    format?: (value: unknown) => React.ReactNode;
+    format?: CellFormatter;
+
+    // Sorting
+    sortSettings?: SortColumnSettings;
 }
 
 /** Table Row */
@@ -30,13 +51,13 @@ export interface ScrollTableData {
     // Unique identifier for this row
     id: string;
 
+    // A reference to the original object that represents this row
+    // Useful for onSelectRow events
+    originalObject: unknown;
+
     // Data values (corresponds to table each column)
     // Maps header id (ScrollTableHeader.id) to the column's data
     [key: string]: unknown;
-
-    // A reference to the original object that represents this row
-    // Useful for onSelectRow events
-    originalObject?: unknown;
 }
 
 const StyledTableCell = withStyles((theme: Theme) =>
@@ -66,20 +87,25 @@ interface ScrollTableProps extends WithStyles<typeof styles> {
     disableHeader?: boolean;
 
     isLoading?: boolean;
+
     onSelectRow?: (selectedRow: ScrollTableData) => void;
+    onSelectSort?: (column: ScrollTableColumn, isDesc: boolean) => void;
 }
 
 interface ScrollTableState {
     selectedRowIndex?: number;
+
+    // Sorting
+    // TODO: Improvement - store sortBy as index of props.columns rather than ScrollTableColumn.id.
+    //  - this way we can ensure uniqueness of sortBy values
+    sortBy?: string;
+    sortDirection?: MuiSortOrder;
 }
 
 class RawScrollTable extends React.Component<ScrollTableProps, ScrollTableState> {
     constructor(props: ScrollTableProps) {
         super(props);
-
-        this.state = {
-            selectedRowIndex: undefined,
-        };
+        this.state = {};
     }
 
     render(): React.ReactNode {
@@ -87,7 +113,7 @@ class RawScrollTable extends React.Component<ScrollTableProps, ScrollTableState>
 
         return (
             <React.Fragment>
-                {title != null ? <SectionTitle>{this.props.title}</SectionTitle> : undefined}
+                {title != null ? <SectionTitle gutterBottom>{this.props.title}</SectionTitle> : undefined}
                 {!isLoading ? this.renderTable() : this.renderSpinner()}
             </React.Fragment>
         );
@@ -105,6 +131,8 @@ class RawScrollTable extends React.Component<ScrollTableProps, ScrollTableState>
 
     private renderTable = (): React.ReactNode => {
         const { className, columns, data, style, disableHeader } = this.props;
+        const { sortBy, sortDirection } = this.state;
+
         return (
             <TableContainer className={className} style={style}>
                 <Table stickyHeader>
@@ -113,15 +141,39 @@ class RawScrollTable extends React.Component<ScrollTableProps, ScrollTableState>
                             <TableRow>
                                 {
                                     // Render column headers
-                                    columns.map((column: ScrollTableColumn) => (
-                                        <StyledTableCell
-                                            key={column.id}
-                                            align={column.align}
-                                            style={{ minWidth: column.minWidth }}
-                                        >
-                                            <b>{column.label}</b>
-                                        </StyledTableCell>
-                                    ))
+                                    columns.map((column: ScrollTableColumn) => {
+                                        const enableColumnSorting: boolean = column.sortSettings != null;
+
+                                        const defaultSortDirection: MuiSortOrder | undefined =
+                                            column.sortSettings?.defaultOrder;
+
+                                        // did user click sort on this column?
+                                        const sortingActive: boolean = sortBy === column.id;
+
+                                        return (
+                                            <StyledTableCell
+                                                key={column.id}
+                                                align={column.align}
+                                                style={{ minWidth: column.minWidth }}
+                                            >
+                                                {enableColumnSorting ? (
+                                                    <TableSortLabel
+                                                        active={sortingActive}
+                                                        direction={
+                                                            sortingActive && sortDirection != null
+                                                                ? sortDirection
+                                                                : defaultSortDirection
+                                                        }
+                                                        onClick={this.createSortHandler(column)}
+                                                    >
+                                                        <b>{column.label}</b>
+                                                    </TableSortLabel>
+                                                ) : (
+                                                    <b>{column.label}</b>
+                                                )}
+                                            </StyledTableCell>
+                                        );
+                                    })
                                 }
                             </TableRow>
                         </TableHead>
@@ -158,7 +210,7 @@ class RawScrollTable extends React.Component<ScrollTableProps, ScrollTableState>
                         const cellValue: unknown = row[column.id];
                         return (
                             <StyledTableCell key={column.id} align={column.align}>
-                                {this.formatCellValue(column, cellValue)}
+                                {this.formatCellValue(column, row, cellValue)}
                             </StyledTableCell>
                         );
                     })
@@ -184,11 +236,43 @@ class RawScrollTable extends React.Component<ScrollTableProps, ScrollTableState>
         }
     };
 
-    private formatCellValue = (column: ScrollTableColumn, cellValue: unknown): React.ReactNode => {
+    private formatCellValue = (
+        column: ScrollTableColumn,
+        row: ScrollTableData,
+        cellValue: unknown,
+    ): React.ReactNode => {
         if (column.format) {
-            return column.format(cellValue);
+            return column.format(row, cellValue);
         }
         return String(cellValue);
+    };
+
+    // ===============
+    // === Sorting ===
+    // ===============
+    private createSortHandler = (column: ScrollTableColumn) => {
+        return () => this.sortHandler(column);
+    };
+
+    private sortHandler = (column: ScrollTableColumn): void => {
+        const { sortDirection } = this.state;
+        const { onSelectSort } = this.props;
+
+        if (!column.sortSettings) {
+            // no sorting settings applied to column
+            return;
+        }
+
+        // Sort state management
+        const currentDirection: MuiSortOrder = sortDirection != null ? sortDirection : column.sortSettings.defaultOrder;
+        const reverseDirection: MuiSortOrder =
+            currentDirection === MuiSortOrder.Asc ? MuiSortOrder.Desc : MuiSortOrder.Asc;
+        this.setState({ sortDirection: reverseDirection, sortBy: column.id });
+
+        // Allow caller to respond to sorting
+        if (onSelectSort) {
+            onSelectSort(column, reverseDirection == MuiSortOrder.Desc);
+        }
     };
 }
 

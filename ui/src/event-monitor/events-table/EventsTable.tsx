@@ -1,13 +1,14 @@
 import React from 'react';
 import { StreamEvent } from '../../objects/streamEvents';
 import { formatEpochTime, shortDateTimeFormat } from '../../utils/dateTimeUtil';
-import { ScrollTable, ScrollTableColumn, ScrollTableData } from '../../common/ScrollTable';
+import { ScrollTable, ScrollTableColumn, ScrollTableData, MuiSortOrder } from '../../common/ScrollTable';
 
 interface EventsTableProps {
     events?: StreamEvent[];
     className?: string;
     onSelectRow?: (selectedRow: ScrollTableData) => void;
     style?: React.CSSProperties;
+    onSelectSort?: (column: ScrollTableColumn, isDesc: boolean) => void;
 }
 
 interface EventsTableState {}
@@ -20,13 +21,14 @@ export class EventsTable extends React.Component<EventsTableProps, EventsTableSt
     render(): React.ReactNode {
         return (
             <ScrollTable
-                title="Detected Events"
+                title="Events"
                 className={this.props.className}
                 data={this.formatTableData()}
                 columns={this.getColumnsConfiguration()}
                 style={this.props.style}
                 isLoading={!this.props.events}
                 onSelectRow={this.props.onSelectRow}
+                onSelectSort={this.props.onSelectSort}
             />
         );
     }
@@ -36,9 +38,8 @@ export class EventsTable extends React.Component<EventsTableProps, EventsTableSt
             return this.props.events.map((event: StreamEvent) => {
                 return {
                     id: `${event.imageSource}-${event.timestamp}`,
-                    stream: event.videoStream,
-                    timestamp: event.timestamp,
                     originalObject: event,
+                    ...event,
                 };
             });
         }
@@ -48,18 +49,25 @@ export class EventsTable extends React.Component<EventsTableProps, EventsTableSt
     private getColumnsConfiguration = (): ScrollTableColumn[] => {
         return [
             {
-                id: 'stream',
+                id: 'videoStream',
                 label: 'Video Stream',
+                sortSettings: {
+                    defaultOrder: MuiSortOrder.Asc,
+                    isDefault: true,
+                },
             },
             {
                 id: 'timestamp',
                 label: 'Time',
-                format: this.formatTimestamp as (value: unknown) => React.ReactNode,
+                sortSettings: {
+                    defaultOrder: MuiSortOrder.Desc,
+                },
+                format: this.formatTimestamp as (row: ScrollTableData, value: unknown) => React.ReactNode,
             },
         ];
     };
 
-    private formatTimestamp(timestamp: number): React.ReactNode {
+    private formatTimestamp(row: ScrollTableData, timestamp: number): React.ReactNode {
         return formatEpochTime(timestamp, shortDateTimeFormat);
     }
 }

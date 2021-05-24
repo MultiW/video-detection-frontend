@@ -3,9 +3,7 @@ import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/s
 import EventMonitor from './event-monitor/EventMonitor';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -39,18 +37,6 @@ class App extends React.Component<WithStyles<typeof styles>> {
                 <main>
                     <EventMonitor />
                 </main>
-                {/* <Container component="main" className={this.props.classes.root} maxWidth="lg">
-                    <Grid container>
-                        <Grid item xs={12}>
-                            <Typography className={this.props.classes.title} align="center" component="h1" variant="h3">
-                                Video Stream Monitor
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <EventMonitor />
-                        </Grid>
-                    </Grid>
-                </Container> */}
             </div>
         );
     }

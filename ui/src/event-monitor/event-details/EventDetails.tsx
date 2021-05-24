@@ -1,19 +1,16 @@
 import React from 'react';
-import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
 import { StreamEvent } from '../../objects/streamEvents';
-import { Prediction, BoundingBox } from '../../objects/streamEvents';
-import Grid, { GridSize } from '@material-ui/core/Grid';
+import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import { formatEpochTime, longDateTimeFormat } from '../../utils/dateTimeUtil';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
 import AnnotatedImage from './AnnotatedImage';
 import Subtitle from './Subtitle';
 import Predictions from './Predictions';
 import SectionTitle from '../../common/SectionTitle';
 
-const styles = (theme: Theme) =>
+const styles = () =>
     createStyles({
         // Main structure
         root: {
@@ -42,7 +39,9 @@ const styles = (theme: Theme) =>
         },
 
         // Predictions card
-        predictionsCard: {},
+        predictionsCard: {
+            height: '100%',
+        },
     });
 
 interface EventDetailsProps extends WithStyles<typeof styles> {
@@ -96,7 +95,7 @@ class EventDetails extends React.Component<EventDetailsProps, EventDetailsState>
             <React.Fragment>
                 {/* Render image title */}
                 <CardContent>
-                    <SectionTitle>Detected Objects</SectionTitle>
+                    <SectionTitle gutterBottom={false}>Detected Objects</SectionTitle>
                     <Subtitle>
                         {`${streamEvent.videoStream} (${formatEpochTime(streamEvent.timestamp, longDateTimeFormat)})`}
                     </Subtitle>
@@ -111,7 +110,7 @@ class EventDetails extends React.Component<EventDetailsProps, EventDetailsState>
     };
 
     private renderPredictions = (): React.ReactNode => {
-        const { classes, streamEvent } = this.props;
+        const { streamEvent } = this.props;
 
         if (streamEvent == null) {
             // This should already be handled. streamEvent shouldn't be null
@@ -120,7 +119,7 @@ class EventDetails extends React.Component<EventDetailsProps, EventDetailsState>
 
         return (
             <CardContent>
-                <SectionTitle>Scores</SectionTitle>
+                <SectionTitle gutterBottom={true}>Scores</SectionTitle>
                 <Predictions predictions={streamEvent.predictions}></Predictions>
             </CardContent>
         );

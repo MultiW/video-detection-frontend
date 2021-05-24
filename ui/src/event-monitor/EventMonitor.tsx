@@ -1,14 +1,15 @@
 import React from 'react';
 import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core/styles';
-import { getEvents } from '../api/eventApi';
+import { fetchEvents } from '../api/eventApi';
 import { StreamEvent } from '../objects/streamEvents';
 import { EventsTable } from './events-table/EventsTable';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import { ScrollTableData } from '../common/ScrollTable';
+import { ScrollTableColumn, ScrollTableData } from '../common/ScrollTable';
 import EventDetails from './event-details/EventDetails';
 import { getRandomColor } from '../utils/randomColor';
+import { Order } from '../api/eventSort';
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -45,8 +46,9 @@ class EventMonitor extends React.Component<EventMonitorProps, EventMonitorState>
     }
 
     async componentDidMount(): Promise<void> {
+        // TODO: somehow sync the default sorting between the API call here and the default sorting configured in EventsTable
         this.setState({
-            events: await getEvents(),
+            events: await fetchEvents({ sortBy: 'videoStream', sortOrder: Order.Asc }),
         });
     }
 
@@ -76,6 +78,7 @@ class EventMonitor extends React.Component<EventMonitorProps, EventMonitorState>
                 events={this.state.events}
                 className={this.props.classes.eventsTable}
                 onSelectRow={this.onSelectEvent}
+                onSelectSort={this.onSelectSort}
             />
         );
     };
@@ -94,6 +97,18 @@ class EventMonitor extends React.Component<EventMonitorProps, EventMonitorState>
 
             // Select row
             this.setState({ selectedEvent: selectedStreamEvent });
+        }
+    };
+
+    private onSelectSort = async (column: ScrollTableColumn, isDesc: boolean): Promise<void> => {
+        // Clear table data
+        this.setState({ events: undefined });
+
+        if (column.sortSettings) {
+            const sortOrder: Order = isDesc ? Order.Desc : Order.Asc;
+            this.setState({
+                events: await fetchEvents({ sortBy: column.id, sortOrder: sortOrder }),
+            });
         }
     };
 }

@@ -1,11 +1,9 @@
 import React from 'react';
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
-import CardMedia from '@material-ui/core/CardMedia';
-import Box from '@material-ui/core/Box';
-import { Prediction, BoundingBox, Score } from './../../objects/streamEvents';
+import { Prediction, Score } from './../../objects/streamEvents';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
-import { ScrollTable } from '../../common/ScrollTable';
+import { ScrollTable, ScrollTableData, CellFormatter } from '../../common/ScrollTable';
 
 const styles = () =>
     createStyles({
@@ -58,20 +56,55 @@ class PredictionList extends React.Component<PredictionListProps, PredictionList
                 className={this.props.classes.scoreBox}
                 style={{ color: prediction.color }}
                 columns={[
-                    { id: 'label', label: 'Label', align: 'left' },
-                    { id: 'score', label: 'Score', align: 'center' },
+                    { id: 'label', label: 'Label', align: 'left', format: this.boldText as CellFormatter },
+                    { id: 'score', label: 'Score', align: 'center', format: this.formatScore as CellFormatter },
                 ]}
-                data={prediction.scores.map((score: Score) => {
-                    return {
-                        id: score.label,
-                        label: score.label,
-                        score: score.score,
-                    };
-                })}
+                data={prediction.scores
+                    .sort((a: Score, b: Score) => {
+                        return b.score - a.score;
+                    })
+                    .map((score: Score) => {
+                        return {
+                            id: score.label,
+                            label: score.label,
+                            score: score.score,
+                            originalObject: score,
+                        };
+                    })}
                 disableHeader={true}
             />
         );
     };
+
+    private formatScore = (row: ScrollTableData, value: number) => {
+        return this.colorText(row, `${value}%`);
+    };
+
+    private colorText = (row: ScrollTableData, value: string) => {
+        if (!row.originalObject) {
+            // This shouldn't occur
+            return value;
+        }
+        return (
+            <div style={{ color: this.scoreToColor((row.originalObject as Score).score) }}>
+                <b>{value}</b>
+            </div>
+        );
+    };
+
+    private boldText = (row: ScrollTableData, value: string) => {
+        return <b>{value}</b>;
+    };
+
+    private scoreToColor(score: number): string {
+        if (score < 25) {
+            return 'red';
+        } else if (score < 75) {
+            return 'yellow';
+        } else {
+            return 'green';
+        }
+    }
 }
 
 export default withStyles(styles, { withTheme: true })(PredictionList);
