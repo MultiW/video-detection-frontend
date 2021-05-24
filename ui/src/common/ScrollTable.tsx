@@ -9,6 +9,11 @@ import TableRow from '@material-ui/core/TableRow';
 import SectionTitle from './SectionTitle';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Box from '@material-ui/core/Box';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+import Badge from '@material-ui/core/Badge';
+import FilterListIcon from '@material-ui/icons/FilterList';
 import { TableSortLabel } from '@material-ui/core';
 
 /**
@@ -70,8 +75,13 @@ const StyledTableCell = withStyles((theme: Theme) =>
 
 const styles = (theme: Theme) =>
     createStyles({
-        spinner: { textAlign: 'center', padding: theme.spacing(2) },
-        header: { backgroundColor: theme.palette.common.black },
+        spinner: {
+            textAlign: 'center',
+            padding: theme.spacing(2),
+        },
+        header: {
+            backgroundColor: theme.palette.common.black,
+        },
     });
 
 interface ScrollTableProps extends WithStyles<typeof styles> {
@@ -83,18 +93,23 @@ interface ScrollTableProps extends WithStyles<typeof styles> {
     className?: string;
     style?: React.CSSProperties;
 
+    // Customization
     title?: React.ReactNode;
     disableHeader?: boolean;
 
     isLoading?: boolean;
 
-    onSelectRow?: (selectedRow: ScrollTableData) => void;
+    onSelectRow?: (selectedRowIndex?: number) => void;
+    selectedRowIndex?: number;
+
     onSelectSort?: (column: ScrollTableColumn, isDesc: boolean) => void;
+
+    // Filtering
+    onClickFilter?: () => void;
+    isFilterApplied?: boolean;
 }
 
 interface ScrollTableState {
-    selectedRowIndex?: number;
-
     // Sorting
     // TODO: Improvement - store sortBy as index of props.columns rather than ScrollTableColumn.id.
     //  - this way we can ensure uniqueness of sortBy values
@@ -105,15 +120,16 @@ interface ScrollTableState {
 class RawScrollTable extends React.Component<ScrollTableProps, ScrollTableState> {
     constructor(props: ScrollTableProps) {
         super(props);
+
         this.state = {};
     }
 
     render(): React.ReactNode {
-        const { isLoading, title } = this.props;
+        const { isLoading } = this.props;
 
         return (
             <React.Fragment>
-                {title != null ? <SectionTitle gutterBottom>{this.props.title}</SectionTitle> : undefined}
+                {this.renderToolbar()}
                 {!isLoading ? this.renderTable() : this.renderSpinner()}
             </React.Fragment>
         );
@@ -129,6 +145,31 @@ class RawScrollTable extends React.Component<ScrollTableProps, ScrollTableState>
         );
     };
 
+    private renderToolbar = (): React.ReactNode => {
+        const { title, isFilterApplied, onClickFilter } = this.props;
+
+        if (title == null) {
+            return;
+        }
+
+        return (
+            <Toolbar disableGutters>
+                <SectionTitle>{this.props.title}</SectionTitle>
+                <Tooltip title="Filter list">
+                    <IconButton onClick={onClickFilter}>
+                        <Badge color={isFilterApplied ? 'primary' : undefined} variant="dot">
+                            <FilterListIcon color={isFilterApplied ? 'primary' : undefined} />
+                        </Badge>
+                    </IconButton>
+                </Tooltip>
+            </Toolbar>
+        );
+    };
+
+    // ========================
+    // === Main Table Logic ===
+    // ========================
+
     private renderTable = (): React.ReactNode => {
         const { className, columns, data, style, disableHeader } = this.props;
         const { sortBy, sortDirection } = this.state;
@@ -139,42 +180,40 @@ class RawScrollTable extends React.Component<ScrollTableProps, ScrollTableState>
                     {!disableHeader ? (
                         <TableHead>
                             <TableRow>
-                                {
-                                    // Render column headers
-                                    columns.map((column: ScrollTableColumn) => {
-                                        const enableColumnSorting: boolean = column.sortSettings != null;
+                                {columns.map((column: ScrollTableColumn) => {
+                                    const enableColumnSorting: boolean = column.sortSettings != null;
 
-                                        const defaultSortDirection: MuiSortOrder | undefined =
-                                            column.sortSettings?.defaultOrder;
+                                    const defaultSortDirection: MuiSortOrder | undefined =
+                                        column.sortSettings?.defaultOrder;
 
-                                        // did user click sort on this column?
-                                        const sortingActive: boolean = sortBy === column.id;
+                                    // did user click sort on this column?
+                                    const sortingActive: boolean = sortBy === column.id;
 
-                                        return (
-                                            <StyledTableCell
-                                                key={column.id}
-                                                align={column.align}
-                                                style={{ minWidth: column.minWidth }}
-                                            >
-                                                {enableColumnSorting ? (
-                                                    <TableSortLabel
-                                                        active={sortingActive}
-                                                        direction={
-                                                            sortingActive && sortDirection != null
-                                                                ? sortDirection
-                                                                : defaultSortDirection
-                                                        }
-                                                        onClick={this.createSortHandler(column)}
-                                                    >
-                                                        <b>{column.label}</b>
-                                                    </TableSortLabel>
-                                                ) : (
+                                    // Render column label and sorting button
+                                    return (
+                                        <StyledTableCell
+                                            key={column.id}
+                                            align={column.align}
+                                            style={{ minWidth: column.minWidth }}
+                                        >
+                                            {enableColumnSorting ? (
+                                                <TableSortLabel
+                                                    active={sortingActive}
+                                                    direction={
+                                                        sortingActive && sortDirection != null
+                                                            ? sortDirection
+                                                            : defaultSortDirection
+                                                    }
+                                                    onClick={this.createSortHandler(column)}
+                                                >
                                                     <b>{column.label}</b>
-                                                )}
-                                            </StyledTableCell>
-                                        );
-                                    })
-                                }
+                                                </TableSortLabel>
+                                            ) : (
+                                                <b>{column.label}</b>
+                                            )}
+                                        </StyledTableCell>
+                                    );
+                                })}
                             </TableRow>
                         </TableHead>
                     ) : undefined}
@@ -192,15 +231,15 @@ class RawScrollTable extends React.Component<ScrollTableProps, ScrollTableState>
     };
 
     private renderDataRow = (row: ScrollTableData, rowIndex: number): React.ReactNode => {
-        const { onSelectRow, columns } = this.props;
+        const { onSelectRow, columns, selectedRowIndex } = this.props;
 
-        const isRowSelected: boolean = rowIndex == this.state.selectedRowIndex;
+        const isRowSelected: boolean = rowIndex == selectedRowIndex;
         return (
             <TableRow
                 hover={!!onSelectRow}
                 tabIndex={-1}
                 key={row.id}
-                onClick={() => this.handleRowSelection(row, rowIndex)}
+                onClick={() => this.handleRowSelection(rowIndex)}
                 selected={isRowSelected}
                 style={!!onSelectRow ? { cursor: 'pointer' } : undefined} // change cursor on hover
             >
@@ -219,20 +258,18 @@ class RawScrollTable extends React.Component<ScrollTableProps, ScrollTableState>
         );
     };
 
-    private handleRowSelection = (row: ScrollTableData, rowIndex: number) => {
-        const { onSelectRow } = this.props;
+    private handleRowSelection = (newRowIndex: number) => {
+        const { onSelectRow, selectedRowIndex } = this.props;
 
-        if (!onSelectRow) {
+        if (onSelectRow == null) {
             return;
         }
 
-        onSelectRow(row);
-
-        if (rowIndex == this.state.selectedRowIndex) {
+        if (newRowIndex == selectedRowIndex) {
             // de-select row
-            this.setState({ selectedRowIndex: undefined });
+            onSelectRow();
         } else {
-            this.setState({ selectedRowIndex: rowIndex });
+            onSelectRow(newRowIndex);
         }
     };
 
