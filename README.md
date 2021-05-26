@@ -27,6 +27,12 @@ One of the biggest improvements to make is in how we display the image. The imag
 
 The horizontal table displaying the scores for each prediction should be centered. Currently, for example, the "Vet Hospital" stream's sole prediction prediction is aligned left.
 
+### Display Order of Scores
+* The display order of the scores should be sorted by x-coordinate of the bounding box. In other words, scores for bounding boxes on the left of the image should be displayed first. This helps the user match the bounding box in the image with the score.
+
+### Color Annotations (Bounding Boxes) in the Images
+Currently, the color of bounding boxes is randomized. However, the color of the bounding boxes should be chosen such that it constrasts against the color of the image. Perhaps the bounding box can be a color that contrasts the "average" color of the image.
+
 ## **Technology Stack**
 This project is written using React and TypeScript. It's a ```create-react-app``` project.
 
