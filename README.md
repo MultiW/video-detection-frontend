@@ -18,7 +18,7 @@ With potentially many events to display, the user may want to quickly preview ea
 * Column to preview detected people/objects (e.g. the top match)
 
 ### Adding video stream filtering
-In the current design, it may seem natural to filter by video stream by using a dropdown menu in the filter popup. However, for use-cases where video streams may not be many (e.g. limited by hardware resources), it could make sense to display video streams in a [grid list](https://material-ui.com/components/grid-list/) to give a better preview of each video stream.
+If we wanted to add a "video stream filter" to the current design, it may seem natural to filter video streams by using a dropdown menu in the filter popup. However, for use-cases where video streams may not be many (e.g. limited by hardware resources), it could make sense to display video streams in a [grid list](https://material-ui.com/components/grid-list/) to give a better preview of each video stream.
 
 ## **Immediate Improvements**
 
